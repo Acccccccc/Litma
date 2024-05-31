@@ -1,0 +1,64 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+
+<div class="page-wrapper">
+  <div class="page-header d-print-none">
+    <div class="container-xl">
+      <div class="row g-2 align-items-center">
+        <div class="col">
+          <h2 class="page-title">
+            Project List
+          </h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="container-xl">
+      <div class="row row-cards">
+        {% for project in projects %}
+        {% if project.name %}
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="row g-0">
+              <div class="col-3">
+                <!-- Assuming you want to show a placeholder or actual project image if available -->
+                {% if project.image_url %}
+                <img src="" class="w-100 h-100 object-cover card-img-start" alt="Project Image" />
+                {% else %}
+                <img src="" class="w-100 h-100 object-cover card-img-start" alt="Default Project Image" />
+                {% endif %}
+              </div>
+              <div class="col">
+                <div class="card-body">
+                  <h3 class="card-title">{{ project.name }}</h3>
+                  <p class="text-muted">{{ project.description|default:'No description available.' }}</p>
+                </div>
+                <!-- Card footer -->
+                <div class="card-footer">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <a href="{% url 'project:project_detail' pk=project.pk %}" class="btn btn-primary">Go somewhere</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <p>No projects found.</p>
+        {% endif %}
+        {% empty %}
+        <p>No projects available.</p>
+        {% endfor %}
+
+      </div>  
+    </div>
+  </div>
+</div>
+
+        <a href="{% url 'literature:literature_list' %}">Back to Literature List</a>
+
+
+
+{% endblock %}

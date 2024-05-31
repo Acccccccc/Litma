@@ -1,0 +1,53 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}Index Page{% endblock %}
+
+
+{% block content %}
+<div class="page">
+    <div class="page-wrapper">
+        <!-- Page header -->
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <h2 class="page-title">
+                            {% if form.instance.pk %}Edit Current{% else %}Add New{% endif %} Literature
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row row-cards">
+                    <div class="col-md-12">
+                      <div class="card">
+                        <div class="card-body">
+                          <form method="post" enctype="multipart/form-data"
+                                action="{% url 'literature:literature_import' %}">
+                                {% csrf_token %}
+                                <label for="csv_file">Upload CSV file:</label>
+                                <input type="file" id="csv_file" name="csv_file">
+                                <button type="submit">Import</button>
+                            </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<a href="{% url 'literature:literature_list' %}">Back to list</a>
+
+{% endblock %}
+
+
+
+
+    
+

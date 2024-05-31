@@ -1,0 +1,82 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="layout-fluid">
+<div class="page-wrapper">
+    <!-- Page header -->
+    <div class="page-header d-print-none">
+        <div class="container-xl">
+            <div class="row g-2 align-items-center">
+                <div class="col">
+                    <h2 class="page-title">
+                        All Literatures
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Page body -->
+    <div class="page-body">
+        <div class="container-xl">
+            <div class="row row-cards">
+
+                <div class="col-12">
+                    <div class="card">
+                        <div class="table-responsive">
+                            <table class="table table-vcenter card-table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Title</th>
+                                        <th scope="col">Journal Abbreviation</th>
+                                        <th scope="col">Attachment</th>
+                                        <th scope="col">DOI</th>
+                                        <th class="w-1"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for literature in literatures %}
+                                    <tr>
+                                        <th scope="row">{{ forloop.counter }}</th>
+                                        <td><a href="{% url 'literature:literature_detail' literature.pk %}">{{ literature.title }}</a></td>
+                                        <td>{{ literature.journal_abbr }}</td>
+                                        <td>{% if literature.has_attachments %}Yes{% else %}No{% endif %}</td>
+                                        <td>{{ literature.doi }}</td>
+                                        <td>
+                                            <div class="btn-group" role="group" aria-label="Basic example">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                    onclick="window.location='{% url 'literature:literature_update' literature.pk %}'">
+                                                    <span data-feather="edit"></span>
+                                                    Edit
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                    onclick="confirmDelete({{ literature.pk }})">
+                                                    <span data-feather="trash-2"></span>
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+<script>
+    function confirmDelete(pk) {
+        if (confirm("确定要删除这条记录吗？")) {
+            window.location.href = "{% url 'literature:literature_delete' pk=0 %}".replace('0', pk);
+        }
+    }
+</script>
+
+{% endblock %}

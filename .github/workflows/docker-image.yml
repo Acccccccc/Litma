@@ -3,8 +3,8 @@ name: Django Docker Build & Push
 on:
   push:
     branches:
-      - main # 当主分支有push时触发
-  workflow_dispatch: # 允许手动触发
+      - main 
+  workflow_dispatch: 
 
 jobs:
   build-and-push-image:
@@ -16,14 +16,14 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: . # 使用当前目录作为构建上下文
-          file: Dockerfile # 指定Dockerfile的位置
-          push: true # 推送镜像到registry
+          context: . 
+          file: Dockerfile 
+          push: true 
           tags: |
-            Accccc90/Litma:latest # 替换为你的Docker用户名和镜像名
+            Accccc90/Litma:latest 
           build-args: |
-            DJANGO_SETTINGS_MODULE=Litma.settings # 如果Dockerfile中有使用环境变量构建参数
+            DJANGO_SETTINGS_MODULE=Litma.settings 
 
       - name: Image digest
-        if: success() # 只在成功时运行
+        if: success() 
         run: echo ${{ steps.docker_build.outputs.digest }}

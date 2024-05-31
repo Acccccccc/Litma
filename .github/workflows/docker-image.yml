@@ -20,7 +20,7 @@ jobs:
           file: Dockerfile 
           push: true 
           tags: |
-            accccc90/Litma:latest 
+            accccc90/litma:latest 
           build-args: |
             DJANGO_SETTINGS_MODULE=Litma.settings 
 

@@ -19,7 +19,6 @@
     <div class="page-body">
         <div class="container-xl">
             <div class="row row-cards">
-
                 <div class="col-12">
                     <div class="card">
                         <div class="table-responsive">
@@ -31,17 +30,22 @@
                                         <th scope="col">Journal Abbreviation</th>
                                         <th scope="col">Attachment</th>
                                         <th scope="col">DOI</th>
+                                        <th scope="col">Projects</th>
                                         <th class="w-1"></th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="literature-table-body">
                                     {% for literature in literatures %}
-                                    <tr>
+                                    <tr id="literature-row-{{ literature.pk }}">
                                         <th scope="row">{{ forloop.counter }}</th>
                                         <td><a href="{% url 'literature:literature_detail' literature.pk %}">{{ literature.title }}</a></td>
                                         <td>{{ literature.journal_abbr }}</td>
                                         <td>{% if literature.has_attachments %}Yes{% else %}No{% endif %}</td>
                                         <td>{{ literature.doi }}</td>
+                                        <td>{% for project in literature.projects.all %}
+                                            {{ project.name }}
+                                            {% endfor %}
+                                        </td>
                                         <td>
                                             <div class="btn-group" role="group" aria-label="Basic example">
                                                 <button type="button" class="btn btn-sm btn-outline-secondary"
@@ -63,18 +67,32 @@
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </div>
     </div>
+</div>
+</div>
 
-</div>
-</div>
 <script>
     function confirmDelete(pk) {
         if (confirm("确定要删除这条记录吗？")) {
-            window.location.href = "{% url 'literature:literature_delete' pk=0 %}".replace('0', pk);
+            const csrfToken = '{{ csrf_token }}';
+            fetch(`{% url 'literature:literature_delete' pk=0 %}`.replace('0', pk), {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ pk: pk })
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById(`literature-row-${pk}`).remove();
+                } else {
+                    alert('Failed to delete the record.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
         }
     }
 </script>

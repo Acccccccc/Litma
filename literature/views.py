@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Literature, Attachment, Project
 from .forms import ImportForm, LiteratureForm, AttachmentForm, ProjectForm
@@ -34,12 +35,40 @@ def literature_update(request, pk):
         form = LiteratureForm(instance=literature)
     return render(request, 'literature/literature_form.html', {'form': form})
 
+from django.shortcuts import redirect
+
+
 def literature_delete(request, pk):
     literature = get_object_or_404(Literature, pk=pk)
+    
+    # 如果是POST请求，则执行删除操作
     if request.method == 'POST':
         literature.delete()
-        return redirect('literature:literature_list')
-    return render(request, 'literature/literature_confirm_delete.html', {'literature': literature})
+        
+        data = {'success': True}
+        # 返回一个JSON响应表示删除成功
+        return JsonResponse(data)
+        
+        # 获取Referer头信息，即用户点击删除前所在的页面URL
+        referer_url = request.META.get('HTTP_REFERER')
+        
+        # 如果Referer存在，则重定向到该页面；否则默认回到literature_list
+        if referer_url:
+            return HttpResponseRedirect(referer_url)
+        else:
+            return redirect('literature:literature_list')
+    
+    # 如果不是POST请求（例如GET请求查看删除确认页面），则返回到详情页或显示确认页面
+    return redirect('literature:literature_detail', pk=pk)
+
+
+#def literature_delete(request, pk):
+#    literature = get_object_or_404(Literature, pk=pk)
+#    if request.method == 'POST':
+#        literature.delete()
+#        return redirect('literature:literature_list')
+#    return redirect('literature:literature_detail', pk=pk)
+
 
 def literature_detail(request, pk):
     literature = get_object_or_404(Literature, pk=pk)
@@ -127,5 +156,5 @@ def literature_import(request):
         file_path = os.path.join(fs.location, filename)
         import_literature_from_csv(file_path)
         fs.delete(filename)  # 删除临时文件
-        return redirect('literature_list')
+        return redirect('literature:literature_list')
     return render(request, 'literature/literature_import.html')
